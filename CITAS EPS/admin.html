@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Administración – Citas Nueva EPS Puerto Asís</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Acceso -->
+  <div id="login" class="login">
+    <h2>Administración de citas</h2>
+    <form id="formLogin">
+      <label class="campo">Clave de administrador<input type="password" id="clave" required autocomplete="current-password"></label>
+      <p id="errLogin" class="error" role="alert"></p>
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+    <p class="nota">Clave inicial: <b>admin123</b>. Cámbiela en la pestaña Ajustes.</p>
+  </div>
+
+  <!-- Panel -->
+  <div id="app" hidden>
+    <header class="barra">
+      <div class="contenedor ancho-admin">
+        <strong class="marca">Nueva EPS</strong><span>Administración de citas</span>
+        <button class="btn sec chico" id="salir">Salir</button>
+      </div>
+    </header>
+
+    <main class="contenedor ancho-admin">
+      <nav class="tabs" role="tablist">
+        <button class="tab" data-tab="agenda" aria-selected="true">Agenda</button>
+        <button class="tab" data-tab="servicios" aria-selected="false">Servicios</button>
+        <button class="tab" data-tab="horario" aria-selected="false">Horarios</button>
+        <button class="tab" data-tab="preguntas" aria-selected="false">Preguntas al paciente</button>
+        <button class="tab" data-tab="qr" aria-selected="false">Código QR</button>
+        <button class="tab" data-tab="ajustes" aria-selected="false">Ajustes</button>
+      </nav>
+
+      <!-- AGENDA -->
+      <section class="panel" id="tab-agenda">
+        <div class="fila">
+          <label class="campo">Día<input type="date" id="agFecha" class="sola"></label>
+          <button class="btn" id="expDia">Descargar Excel del día</button>
+        </div>
+        <div class="fila">
+          <label class="campo">Desde<input type="date" id="rgDesde" class="sola"></label>
+          <label class="campo">Hasta<input type="date" id="rgHasta" class="sola"></label>
+          <button class="btn sec" id="expRango">Excel por rango (una hoja por día)</button>
+        </div>
+        <div class="stats" id="stats"></div>
+        <div class="scroll">
+          <table>
+            <thead><tr><th>Hora</th><th>Paciente</th><th>Documento</th><th>Servicio</th><th>Celular</th><th>Estado</th><th></th></tr></thead>
+            <tbody id="tbAgenda"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SERVICIOS -->
+      <section class="panel" id="tab-servicios" hidden>
+        <h2>Servicios que puede pedir el paciente</h2>
+        <div id="listaServicios" class="lista-simple"></div>
+        <div class="fila">
+          <label class="campo">Nuevo servicio<input id="nuevoServicio" class="sola" maxlength="60"></label>
+          <button class="btn" id="addServicio">Agregar</button>
+        </div>
+      </section>
+
+      <!-- HORARIOS -->
+      <section class="panel" id="tab-horario" hidden>
+        <h2>Horario de atención</h2>
+        <div class="dias" id="dias"></div>
+        <div class="rejilla" style="margin-top:1rem">
+          <label class="campo">Hora de inicio<input type="time" id="hInicio"></label>
+          <label class="campo">Hora de cierre<input type="time" id="hFin"></label>
+          <label class="campo">Inicio del almuerzo<input type="time" id="hAlmI"></label>
+          <label class="campo">Fin del almuerzo<input type="time" id="hAlmF"></label>
+          <label class="campo">Minutos por cita<input type="number" id="hDur" min="5" max="120"></label>
+          <label class="campo">Citas al mismo tiempo (cupos por franja)<input type="number" id="hCupos" min="1" max="50"></label>
+          <label class="campo">Días de anticipación permitidos<input type="number" id="hAdel" min="1" max="180"></label>
+        </div>
+        <h3>Días sin atención (festivos, jornadas especiales)</h3>
+        <div class="fila">
+          <label class="campo">Fecha<input type="date" id="bloqFecha" class="sola"></label>
+          <button class="btn sec" id="addBloq">Agregar día sin atención</button>
+        </div>
+        <div class="chips" id="chipsBloq"></div>
+        <p id="errHorario" class="error"></p>
+        <button class="btn" id="saveHorario">Guardar horarios</button>
+        <span id="okHorario" class="nota"></span>
+      </section>
+
+      <!-- PREGUNTAS -->
+      <section class="panel" id="tab-preguntas" hidden>
+        <h2>Preguntas que se le hacen al paciente</h2>
+        <p class="nota" style="margin-bottom:1rem">Estas preguntas aparecen después de elegir el servicio. Los cambios se guardan solos.</p>
+        <div id="listaPreguntas"></div>
+        <button class="btn" id="addPregunta">Agregar pregunta</button>
+      </section>
+
+      <!-- QR -->
+      <section class="panel" id="tab-qr" hidden>
+        <h2>Código QR para los pacientes</h2>
+        <label class="campo" style="max-width:560px">Dirección de la página de citas
+          <input id="qrUrl" class="sola" placeholder="https://su-sitio.com/index.html">
+        </label>
+        <p class="nota">Cuando publique el sitio en internet, escriba aquí su dirección pública y genere el QR de nuevo.</p>
+        <div class="acciones"><button class="btn" id="genQR">Generar QR</button><button class="btn sec" id="bajarQR">Descargar PNG</button><button class="btn sec" id="imprimirQR">Imprimir</button></div>
+        <div id="qrBox" style="margin-top:1rem"></div>
+      </section>
+
+      <!-- AJUSTES -->
+      <section class="panel" id="tab-ajustes" hidden>
+        <h2>Ajustes generales</h2>
+        <div class="rejilla">
+          <label class="campo ancho">Sede (aparece en el encabezado)<input id="aSede" maxlength="80"></label>
+          <label class="campo ancho">Mensaje de bienvenida<textarea id="aMensaje" rows="2" maxlength="300"></textarea></label>
+          <label class="campo">Nueva clave de administrador<input type="password" id="aClave" autocomplete="new-password" placeholder="Dejar vacío para no cambiarla"></label>
+        </div>
+        <h3>Correo de confirmación (EmailJS, opcional)</h3>
+        <p class="nota">Cree una cuenta gratis en emailjs.com, un servicio de correo y una plantilla. En la plantilla use las variables
+          <code>{{to_email}}</code> (en el campo "To email"), <code>{{to_name}}</code>, <code>{{codigo}}</code>, <code>{{fecha}}</code>, <code>{{hora}}</code>, <code>{{servicio}}</code> y <code>{{sede}}</code>.</p>
+        <div class="rejilla">
+          <label class="campo">Public Key<input id="aEmPk"></label>
+          <label class="campo">Service ID<input id="aEmSv"></label>
+          <label class="campo">Template ID<input id="aEmTp"></label>
+        </div>
+        <div class="acciones"><button class="btn" id="saveAjustes">Guardar ajustes</button></div>
+        <p id="okAjustes" class="nota"></p>
+
+        <h3>Copia de seguridad</h3>
+        <div class="acciones">
+          <button class="btn sec" id="bkExport">Descargar copia (JSON)</button>
+          <label class="btn sec" style="cursor:pointer">Restaurar copia<input type="file" id="bkImport" accept=".json" hidden></label>
+          <button class="btn peligro" id="bkBorrar">Borrar todas las citas</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="detalle"></dialog>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

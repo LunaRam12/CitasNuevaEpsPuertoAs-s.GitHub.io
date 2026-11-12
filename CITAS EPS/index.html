@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agendar cita – Nueva EPS Puerto Asís</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="contenedor"><strong class="marca">Nueva EPS</strong><span id="sede"></span></div>
+  </header>
+
+  <main class="contenedor">
+    <section id="intro">
+      <h1>Agende su cita sin hacer fila</h1>
+      <p id="mensaje"></p>
+    </section>
+
+    <form id="form" novalidate>
+      <fieldset>
+        <legend><span class="paso">1</span> Sus datos</legend>
+        <div class="rejilla">
+          <label class="campo">Nombres<input name="nombres" required autocomplete="given-name" maxlength="60"></label>
+          <label class="campo">Apellidos<input name="apellidos" required autocomplete="family-name" maxlength="60"></label>
+          <label class="campo">Tipo de documento<select name="tipoDoc" id="tipoDoc" required></select></label>
+          <label class="campo">Número de documento<input name="numDoc" required inputmode="numeric" pattern="[0-9A-Za-z]{5,15}" title="Entre 5 y 15 caracteres, sin puntos ni espacios" maxlength="15"></label>
+          <label class="campo">Edad (años)<input name="edad" type="number" min="0" max="120" required></label>
+          <label class="campo">Sexo<select name="sexo" required><option value="">Seleccione</option><option>Femenino</option><option>Masculino</option></select></label>
+          <label class="campo">Celular<input name="celular" type="tel" required inputmode="numeric" pattern="3[0-9]{9}" title="10 dígitos, empieza por 3. Ej: 3101234567" maxlength="10" autocomplete="tel"></label>
+          <label class="campo">Correo electrónico<input name="correo" type="email" required autocomplete="email" maxlength="100"></label>
+          <label class="campo">Barrio o vereda<input name="barrio" required maxlength="80"></label>
+          <label class="campo">Régimen<select name="regimen" required><option value="">Seleccione</option><option>Contributivo</option><option>Subsidiado</option><option>No lo sé</option></select></label>
+          <label class="campo ancho">Condición especial
+            <select name="condicion">
+              <option>Ninguna</option><option>Gestante</option><option>Persona con discapacidad</option><option>Enfermedad de alto costo</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="paso">2</span> ¿Qué necesita?</legend>
+        <label class="campo">Servicio<select name="servicio" id="servicio" required></select></label>
+        <div id="preguntas" class="rejilla"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend><span class="paso">3</span> Fecha y hora</legend>
+        <label class="campo" style="max-width:260px">Fecha de la cita<input type="date" name="fecha" id="fecha" required></label>
+        <div id="franjas" class="franjas"><p class="nota">Elija una fecha para ver los horarios.</p></div>
+        <p id="horaElegida" class="nota" aria-live="polite"></p>
+      </fieldset>
+
+      <label class="chk" style="margin:1rem 0">
+        <input type="checkbox" name="acepto" required>
+        <span>Autorizo el tratamiento de mis datos personales para gestionar esta cita, conforme a la Ley 1581 de 2012.</span>
+      </label>
+
+      <p id="errores" class="error" role="alert"></p>
+      <button class="btn" type="submit" id="btnAgendar">Agendar mi cita</button>
+    </form>
+
+    <section id="confirmacion" hidden>
+      <h1>Su cita quedó agendada</h1>
+      <p>Guarde este código. Lo necesita para consultar o cancelar su cita.</p>
+      <p class="codigo" id="cCodigo"></p>
+      <dl class="resumen" id="cResumen"></dl>
+      <p id="cCorreo" class="exito"></p>
+      <div class="acciones">
+        <button class="btn" onclick="window.print()">Imprimir o guardar como PDF</button>
+        <a class="btn sec" id="cMailto" href="#">Enviarme el resumen por correo</a>
+        <button class="btn sec" onclick="location.reload()">Agendar otra cita</button>
+      </div>
+    </section>
+
+    <details id="consulta">
+      <summary>Ya tengo una cita: consultar o cancelar</summary>
+      <form id="formConsulta" class="rejilla" style="margin-top:.8rem">
+        <label class="campo">Código de cita<input name="codigo" required placeholder="NE-20261120-ABCD"></label>
+        <label class="campo">Número de documento<input name="numDoc" required></label>
+        <div><button class="btn sec" type="submit">Buscar mi cita</button></div>
+      </form>
+      <div id="resConsulta"></div>
+    </details>
+  </main>
+
+  <footer class="contenedor">Nueva EPS – Puerto Asís, Putumayo. Sistema de agendamiento de citas.</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/paciente.js"></script>
+</body>
+</html>
